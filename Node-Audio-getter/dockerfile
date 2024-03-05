@@ -3,7 +3,8 @@ WORKDIR /Node-Audio-getter
 COPY . .
 RUN npm i --save-dev nodemon
 RUN pip install transformers torch
-RUN pip install click 
+RUN pip install click torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+RUN apt-get update && apt-get install -y ffmpeg
 
 EXPOSE 3000
 
