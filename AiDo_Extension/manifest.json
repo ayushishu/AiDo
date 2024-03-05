@@ -1,0 +1,42 @@
+{
+  "manifest_version": 2,
+
+  "name": "AiDo",
+  "description": "This extension captures the audio on the current tab and rest is process to our AI Chat Section ",
+  "version": "1.1.1",
+  "icons": {
+    "128":"eye.png"
+    },
+
+  "browser_action": {
+    "default_icon": "eye.png",
+    "default_popup": "popup.html",
+    "default_title": "Open AiDo interface"
+  },
+  "options_page": "options.html",
+  "background": {
+    "scripts": ["background.js", "worker.js"],
+    "persistent": true
+  },
+  "permissions": [
+    "tabCapture",
+    "downloads",
+    "storage"
+  ],
+  "commands": {
+    "start": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+U"
+      },
+      "description": "Start Capture"
+    },
+    "stop": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+X",
+        "mac": "MacCtrl+Shift+X"
+      },
+      "description": "Stop Capture"
+    }
+  }
+}

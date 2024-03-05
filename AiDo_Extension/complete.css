@@ -1,0 +1,71 @@
+.header {
+  display: flex;
+  align-items: center;
+  padding-bottom: 15px;
+  padding-left: 20px;
+  border-bottom: 2px solid rgb(106, 167, 172);
+}
+
+.header-title {
+  padding: 0 5px;
+}
+
+.progress {
+  margin: 50px 20px 10px 20px;
+  font-size: 16px;
+  display: flex;
+}
+
+.notes {
+  margin: 0 20px;
+}
+
+#progressContainer {
+  margin-left: 5px;
+  width: 500px;
+  height: 18px;
+  background-color: lavenderblush;
+}
+
+#encodeProgress {
+  height: 100%;
+  width: 0%;
+  background-color: rgb(100, 173, 186);
+}
+
+#saveCapture {
+  display: none;
+}
+
+.buttonContainer {
+  display: flex;
+}
+
+#status {
+  margin-top: 30px;
+  margin-left: 20px;
+  font-size: 14px;
+}
+
+.button {
+  padding: 10px;
+  border: 2px solid rgb(107, 155, 167);
+  font-size: 16px;
+  background-color: lavenderblush;
+  font-weight: bold;
+  margin: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.button:hover {
+  color: rgb(101, 170, 172);
+  background-color: rgb(93, 161, 161);
+}
+
+#review {
+  color: rgb(0, 217, 255);
+  display: inline;
+  text-decoration: underline;
+  cursor: pointer;
+}
