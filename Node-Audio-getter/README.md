@@ -7,7 +7,7 @@
 3. Install Node.js if not already installed.
 4. Run `npm install` to install dependencies. 
 5. Ensure Python is installed on your system.
-6. Run 'npm start' 
+6. Run `npm start` 
 
 ## Execution ▶️
 
