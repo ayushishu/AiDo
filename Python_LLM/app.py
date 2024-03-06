@@ -70,4 +70,8 @@ if st.session_state['generated']:
     with response_container:
         for i in range(len(st.session_state['generated'])):
             st.write(st.session_state["past"][i])
+<<<<<<< HEAD
             st.write(st.session_state['generated'][i])
+=======
+            st.write(st.session_state['generated'][i])
+>>>>>>> 80193503ee602b7ab98afc0212185f44e80bc0ac

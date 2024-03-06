@@ -163,7 +163,7 @@ def chroma_db_store(load_db):
 
 def get_llm_response(query,model,image_path=None):
 
-    vectordb = chroma_db_store(load_db=True)
+    vectordb = chroma_db_store(load_db=False)
 
     result = get_result(vectordb,query,model,image_path)
 
