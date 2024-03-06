@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import click
 import os
 import time
@@ -30,9 +28,9 @@ def asr_cli(model, device, dtype, batch_size, better_transformer, chunk_length, 
     start_time = time.perf_counter()
     outputs = pipe(audio_file, chunk_length_s=chunk_length, batch_size=batch_size, return_timestamps=True)
 
-    # Output the results to a text file
+    # Output the results to a text file in the uploadFile folder
     audio_file_name = os.path.splitext(os.path.basename(audio_file))[0]
-    text_filename = f"{audio_file_name}.txt"
+    text_filename = os.path.join('uploadFile', f"{audio_file_name}.txt")
     with open(text_filename, 'w') as text_file:
         for chunk in outputs['chunks']:
             text_file.write(chunk['text'].strip() + '\n')

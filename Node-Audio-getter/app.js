@@ -3,6 +3,7 @@ const multer = require('multer');
 const fs = require('fs');
 const { spawn } = require('child_process');
 const path = require('path');
+const axios = require('axios');
 
 const app = express();
 const upload = multer();
@@ -52,13 +53,8 @@ app.post('/upload', upload.single('audioFile'), (req, res) => {
     console.log('Audio file saved:', filePath);
 
     // Run Python script
-    const scriptPath =  'insanely-fast-whisper.py';
+    const scriptPath = 'insanely-fast-whisper.py';
     const audioFilePath = path.relative(__dirname, filePath); // Get relative path
-    
-    const command = `python ${scriptPath} ${audioFilePath}`;
-    console.log('Executing command:', command);
-    console.log('Python script path:', scriptPath);
-    console.log('Audio file path:', audioFilePath);
 
     runPythonScript(scriptPath, audioFilePath)
       .then(output => {
@@ -72,6 +68,22 @@ app.post('/upload', upload.single('audioFile'), (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+app.listen(9020, () => {
+  console.log('Server is running on port 9020');
+
+  // Send uploadFile directory to Python API after 2 minutes
+  setTimeout(() => {
+    const postData = {
+      path: 'C:/Users/katoc/Downloads/node-audio-getter/uploadFile'
+    };
+    axios.post('http://localhost:8000/store_data', postData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(response => {
+      console.log('Axios POST request successful:', response.data);
+    }).catch(error => {
+      console.error('Error sending Axios POST request:', error);
+    });
+  }, 120000); // 2 minutes delay (120000 milliseconds)
 });
