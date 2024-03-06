@@ -54,3 +54,11 @@ Enter AAIDO, the avant-garde solution to these dilemmas. Harnessing the prowess 
 ---
 
 This README encapsulates the essence of AAIDO, showcasing its innovative features, robust components, seamless installation, and transformative impact. For detailed setup instructions and component-specific guidance, kindly refer to the individual README files within the repository.
+
+
+![image](https://github.com/ayushishu/AiDo/assets/65271275/3c75996d-b663-4a9a-a6a9-9e0248880775)
+
+![image](https://github.com/ayushishu/AiDo/assets/65271275/5f66960e-04a4-4649-a9ca-0e69e440a5e9)
+
+![image](https://github.com/ayushishu/AiDo/assets/65271275/302f40f9-6dcf-4ca9-97b8-f1a7e324c7fc)
+
