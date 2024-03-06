@@ -14,10 +14,10 @@ def save_uploaded_file(uploaded_file):
     except Exception as e:
         print(e)
         return None
-    
+
 # Setting page title and header
-st.set_page_config(page_title="Doc Searcher", page_icon=":robot:")
-st.header("AIDO")
+st.set_page_config(page_title="Doc Searcher", page_icon=":robot:", layout="wide", initial_sidebar_state="expanded")
+st.title("AIDO: Your AI DOC Assistant")
 
 # Initialise session state variables
 if 'generated' not in st.session_state:
@@ -26,13 +26,12 @@ if 'past' not in st.session_state:
     st.session_state['past'] = []
 
 # Sidebar - let user choose model, show total cost of current conversation, and let user clear the current conversation
-st.sidebar.title("Sidebar")
-model_name = st.sidebar.radio("Choose a model:", ("Gemini-Pro", "Gemini-Pro-Vision"))
-
+st.sidebar.title("Options")
+model_name = st.sidebar.radio("Choose a model:", ("Text Model", "Image Model"))
 clear_button = st.sidebar.button("Clear Conversation", key="clear")
 
 # Map model names to OpenAI model IDs
-if model_name == "Gemini-Pro":
+if model_name == "Text Model":
     model = "gemini-pro"
 else:
     model = "gemini-pro-vision"
@@ -56,7 +55,7 @@ container = st.container()
 
 with container:
     with st.form(key='my_form', clear_on_submit=True):
-        user_input = st.text_area("You:", key='input', height=100)
+        user_input = st.text_area("You:", key='input', height=100, max_chars=500)
         uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png"])
         submit_button = st.form_submit_button(label='Send')
     
@@ -71,4 +70,4 @@ if st.session_state['generated']:
     with response_container:
         for i in range(len(st.session_state['generated'])):
             st.write(st.session_state["past"][i])
-            st.write(output)
+            st.write(st.session_state['generated'][i])

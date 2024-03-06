@@ -20,13 +20,15 @@ from fastapi import FastAPI
 import uuid
 import uvicorn
 
+chat_history = []
+
 def load_image_llm():
-    os.environ["GOOGLE_API_KEY"] = "AIzaSyBs9TSpWareS_5s1UrkNmW4iY9Xx0MXAEM"
+    os.environ["GOOGLE_API_KEY"] = "AIzaSyDSVg488Lh7drFAadJcvgLYdZ4N1erjQnw"
     llm = ChatGoogleGenerativeAI(model="gemini-pro-vision",convert_system_message_to_human=True)
     return llm
 
 def load_text_llm():
-    os.environ["GOOGLE_API_KEY"] = "AIzaSyBs9TSpWareS_5s1UrkNmW4iY9Xx0MXAEM"
+    os.environ["GOOGLE_API_KEY"] = "AIzaSyDSVg488Lh7drFAadJcvgLYdZ4N1erjQnw"
     llm = ChatGoogleGenerativeAI(model="gemini-pro",convert_system_message_to_human=True)
     return llm
 
@@ -49,6 +51,7 @@ def save_string_to_txt(input_string, directory="/home/aditya-anand/Adaboost/Q&A_
 def get_result(vectordb,query,model,image_path=None):
     
     if(model=="gemini-pro-vision"):
+        
         image_llm = load_image_llm()
         message = HumanMessage(
         content=[
@@ -60,23 +63,59 @@ def get_result(vectordb,query,model,image_path=None):
             ]
         )
         content = image_llm.invoke([message]).content
-        save_string_to_txt(content)
+        # save_string_to_txt(content)
         return content
     else:
         text_llm = load_text_llm()
 
         retriever = vectordb.as_retriever()
 
-        prompt = hub.pull("rlm/rag-prompt")
+        # prompt = hub.pull("rlm/rag-prompt")
+
+        contextualize_q_system_prompt = """Given a chat history and the latest user question \
+        which might reference context in the chat history, formulate a standalone question \
+        which can be understood without the chat history. Do NOT answer the question, \
+        just reformulate it if needed and otherwise return it as is."""
+
+        contextualize_q_prompt = ChatPromptTemplate.from_messages(
+            [
+                ("system", contextualize_q_system_prompt),
+                MessagesPlaceholder(variable_name="chat_history"),
+                ("human", "{question}"),
+            ]
+        )
+
+        contextualize_q_chain = contextualize_q_prompt | text_llm | StrOutputParser()
+
+        qa_system_prompt = """You are an assistant for question-answering tasks. \
+        Use the following pieces of retrieved context to answer the question. \
+        If you don't know the answer, just say that you don't know. \
+        Use three sentences maximum and keep the answer concise.\
+
+        {context}"""
+        qa_prompt = ChatPromptTemplate.from_messages(
+            [
+                ("system", qa_system_prompt),
+                MessagesPlaceholder(variable_name="chat_history"),
+                ("human", "{question}"),
+            ]
+        )
+
+        def contextualized_question(input: dict):
+            if input.get("chat_history"):
+                return contextualize_q_chain
+            else:
+                return input["question"]
 
         def format_docs(docs):
             return "\n\n".join(doc.page_content for doc in docs)
 
         rag_chain = (
-            {"context": retriever | format_docs, "question": RunnablePassthrough()}
-            | prompt
+            RunnablePassthrough.assign(
+                context=contextualized_question | retriever | format_docs
+            )
+            | qa_prompt
             | text_llm
-            | StrOutputParser()
         )
 
         if(query.find("summary")!=-1 or query.find("Summary")!=-1 or query.find("summarize")!=-1 or query.find("Summarize")!=-1) :
@@ -85,8 +124,9 @@ def get_result(vectordb,query,model,image_path=None):
             summary = summarize_chain.invoke(input_documents=search, question="Write a summary within 300 words.")
             return summary
         else:
-            res = rag_chain.invoke(query)
-            return res
+            res = rag_chain.invoke({"question": query, "chat_history": chat_history})
+            chat_history.extend([HumanMessage(content=query), res])
+            return res.content
  
 def load_docs(directory):
   loader = DirectoryLoader(directory)
@@ -123,7 +163,7 @@ def chroma_db_store(load_db):
 
 def get_llm_response(query,model,image_path=None):
 
-    vectordb = chroma_db_store(load_db=True)
+    vectordb = chroma_db_store(load_db=False)
 
     result = get_result(vectordb,query,model,image_path)
 
